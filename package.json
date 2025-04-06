@@ -2,9 +2,11 @@
   "name": "youtube",
   "version": "1.0.0",
   "description": "backend clone of youtube ",
+  "type": "module",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/app.js"
   },
   "repository": {
     "type": "git",
@@ -16,5 +18,8 @@
     "nodejs"
   ],
   "author": "Shaurya Jain",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
 }
