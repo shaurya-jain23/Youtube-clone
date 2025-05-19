@@ -1,38 +1,17 @@
-// require('dotenv').config({path: './env'})
-import dotenv from "dotenv";
-import express from "express";
-import connectDB from "./db/index.js";
+import express, { urlencoded } from "express";
+import cors from "cors"
+import cookieParser from "cookie-parser"
+
 const app = express()
 
-dotenv.config({
-    path: './env'
-})
+app.use(cors({
+    origin: process.env.CORS_ORIGIN,
+    credentials: true
+}))
 
-connectDB()
+app.use(express.json({limit: "16kb"}))
+app.use(urlencoded({extended: true, limit: "16kb"}))
+app.use(express.static(path.join(__dirname, 'public')))
+app.use(cookieParser())
 
-
-
-
-
-
-
-/*
-import mongoose from "mongoose";
-import { DB_NAME } from "./constants";
-
-Immediately Invoked Async Function Expression (IIAFE) approach
-(async () =>{
-    try{
-       await mongoose.connect(`${process.env.MONGODB_URI}/${DB_NAME}`)
-       app.on("error", (err) => {
-        console.error("Express App Error:", err);
-        });
-       app.listen(process.env.PORT, ()=>{
-        console.log(`Server is running on port ${process.env.PORT}`)
-       })
-    }catch(error){
-        console.error("Failed to start server:", error);
-        process.exit(1);
-    }
-})()
-*/
+export {app}
