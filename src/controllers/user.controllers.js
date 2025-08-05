@@ -2,8 +2,8 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import {User} from "../models/user.models.js";
 import {uploadOnCloudinary} from "../utils/cloudinary.js";
-import { response } from "express";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import jwt from "jsonwebtoken"
 
 const generateAccessAndRefreshToken = async (userId) => {
     try{
@@ -89,11 +89,16 @@ export const loginUser = asyncHandler(async(req, res)=>{
     // if existed match the password 
     // access and refresh token
     // send cookie
-
-    const {username, email, password} = req.body;
+    
+    const {email,username, password} = req.body;
+    
     if (!username && !email) {
         throw new ApiError(400, "username or email is required");
     }
+    // Alternative way of above logic
+    // if (!(username || email)) {
+    //     throw new ApiError(400, "username or email is required");
+    // }
 
     const user = await User.findOne({
         $or: [{username}, {email}]
@@ -115,16 +120,17 @@ export const loginUser = asyncHandler(async(req, res)=>{
 
     const options = {
         httpOnly: true,
-        secure: true
+        secure: process.env.NODE_ENV === "production", // HTTPS only in prod
     }
+
 
     return res
     .status(200)
-    .cookie("accessToken",accessToken, options)
+    .cookie("accessToken", accessToken, options)
     .cookie("refreshToken", refreshToken, options)
     .json(
         new ApiResponse(
-            200,
+            200, 
             {
                 user: loggedInUser, accessToken, refreshToken
             },
